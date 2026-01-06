@@ -2,23 +2,33 @@
 #define MAP_H
 
 #include <defines.h>
+#include <logger.h>
+#include <error.h>
+#include <types.h>
 
-namespace world {
+using std::ifstream;
+using std::stringstream;
 
-// TODO: load maps using a custom file format
-//          or use smth like TrenchBroom
+namespace y::world {
 
-constexpr i32 MAP_WIDTH  = 16;
-constexpr i32 MAP_HEIGHT = 16;
+class Map
+{
+    private:
+    string filepath;  // path to map file
+    vector<y::math::Polygon> polygons;
 
-class Map {
-private:
-    i32 world_map[MAP_HEIGHT][MAP_WIDTH];
+    void load();
 
-public:
-    Map();
+    public:
+    Map() {}
+    Map(string filepath);
+
+    inline void set_map_file(string filepath) { this->filepath = filepath; }
+
+    // getters
+    const vector<y::math::Polygon>& get_polygons() const { return polygons; }
 };
 
-} // namespace world
+}  // namespace y::world
 
-#endif // MAP_H
+#endif  // MAP_H

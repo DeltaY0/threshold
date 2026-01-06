@@ -4,6 +4,10 @@
 #include <defines.h>
 #include <logger.h>
 #include <error.h>
+#include <types.h>
+
+#include <core/window.h>
+#include <world/map.h>
 
 #include <SDL3/SDL.h>
 
@@ -23,10 +27,21 @@ class Renderer
     SDL_Renderer* renderer;
     i32 screen_width, screen_height;
 
+    world::Camera cam;
+    world::Map map;
+
     public:
-    Renderer(i32 w, i32 h);
+    Renderer(Window* window, i32 w, i32 h);
+
+    // init
+    void init_cam(f64 posx, f64 posy, f64 angle);
+    void load_map(string mapfile);
+
+    // drawing
     void put_pixel(i32 x, i32 y, pixel px);
-    
+    void draw_line(y::math::Line line);
+    void render_map();
+
     void render();
 
     // getters

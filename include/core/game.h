@@ -16,6 +16,8 @@ namespace y {
 class Game
 {
     private:
+    // NOTE: window declared first beofer renderer
+    //  to ensure renderer is destroyed first (RAII)
     unique_ptr<Window> window;
     unique_ptr<Renderer> renderer;
     bool running = false;

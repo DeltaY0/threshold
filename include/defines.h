@@ -5,8 +5,13 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <tuple>
+
+#include <fstream>
+#include <sstream>
 
 using std::string;
+using std::tuple;
 using std::vector;
 
 // project specific
@@ -17,7 +22,7 @@ using std::vector;
 #define VERSION_PATCH 0
 
 // unsigned int types
-typedef Uint8 u8;
+typedef uint8_t u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 typedef unsigned long long u64;

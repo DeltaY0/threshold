@@ -26,11 +26,16 @@ void Window::init_window() {
         creation_flags
     );
 
+    if(window == NULL)
+        YTHROWT(y::ErrType::SDL, "couldn't create an SDL Window");
+
     SDL_WindowFlags pos_flags = SDL_WINDOWPOS_CENTERED;
-    SDL_SetWindowPosition(
-        window,
-        pos_flags,
-        pos_flags
+    YSDLCHECK(
+        SDL_SetWindowPosition(
+            window,
+            pos_flags,
+            pos_flags
+        )
     );
 
     LOGFMT(PROJNAME, "window", "initialized window successfully");
@@ -57,7 +62,9 @@ void Window::set_size(i32 width, i32 height) {
 }
 
 Window::~Window() {
-    SDL_DestroyWindow(window);
+    if(window) {
+        SDL_DestroyWindow(window);
+        LOGFMT(PROJNAME, "window", "destroyed SDL window");
+    }
 }
-
 }  // namespace y

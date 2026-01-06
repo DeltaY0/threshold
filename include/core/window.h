@@ -31,11 +31,11 @@ class Window
     void set_size(i32 width, i32 height);
 
     // getters
+    string get_title() const { return window_title; }
     i32 get_width() const { return window_width; }
     i32 get_height() const { return window_height; }
     SDL_Window* get_sdl_window() const { return window; }
 
-    // destructor
     ~Window();
 };
 
