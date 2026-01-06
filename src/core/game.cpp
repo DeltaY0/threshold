@@ -3,13 +3,24 @@
 void y::Game::init_game() {
     YSDLCHECK(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
-    if(1 + 1 == 3) {
-        YTHROWT(y::ErrType::Generic, "Failed to do basic math");
+    window = new Window("WINDOW", 800, 600);
+}
+
+void y::Game::handle_input() {
+    // quit
+    if(event.type == SDL_EVENT_QUIT) {
+        running = false;
     }
 }
 
-void y::Game::handle_input() {}
-
-void y::Game::update(i32 deltatime) {}
+void y::Game::update(i32 deltatime) {
+    SDL_PollEvent(&event);
+}
 
 void y::Game::render() {}
+
+y::Game::~Game() {
+    delete window;
+
+    SDL_Quit();
+}

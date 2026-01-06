@@ -2,7 +2,7 @@
 SetLocal EnableDelayedExpansion
 
 REM --- Configuration ---
-set outputName=boomer
+set outputName=threshold
 
 set compiler=g++
 

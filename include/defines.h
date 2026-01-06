@@ -2,9 +2,15 @@
 #define DEFINES_H
 
 #include <corecrt.h>
+#include <string>
+#include <vector>
+#include <memory>
+
+using std::string;
+using std::vector;
 
 // project specific
-#define PROJNAME "BOOMER"
+#define PROJNAME "threshold"
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 1
