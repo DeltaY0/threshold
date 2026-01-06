@@ -7,12 +7,12 @@ Window::Window() : window_title("SDL3 Window") {
 }
 
 Window::Window(i32 width, i32 height)
-    : window_title("SDL3 Window"), width(width), height(height) {
+    : window_title("SDL3 Window"), window_width(width), window_height(height) {
     init_window();
 }
 
 Window::Window(string title, i32 width, i32 height)
-    : window_title(title), width(width), height(height) {
+    : window_title(title), window_width(width), window_height(height) {
     init_window();
 }
 
@@ -22,7 +22,7 @@ void Window::init_window() {
     SDL_WindowFlags creation_flags = SDL_WINDOW_RESIZABLE;
     window = SDL_CreateWindow(
         window_title.c_str(),
-        width, height,
+        window_width, window_height,
         creation_flags
     );
 
@@ -38,7 +38,7 @@ void Window::init_window() {
     // clang-format on
 }
 
-void Window::set_window_title(string title) {
+void Window::set_title(string title) {
     this->window_title = title;
 
     YSDLCHECK(SDL_SetWindowTitle(window, window_title.c_str()));
@@ -47,8 +47,8 @@ void Window::set_window_title(string title) {
            "changed window title to: ", YELLOW_TEXT(title.c_str()));
 }
 
-void Window::set_window_size(i32 width, i32 height) {
-    this->width = width, this->height = height;
+void Window::set_size(i32 width, i32 height) {
+    this->window_width = width, this->window_height = height;
 
     YSDLCHECK(SDL_SetWindowSize(window, width, height));
 

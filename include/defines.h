@@ -17,7 +17,7 @@ using std::vector;
 #define VERSION_PATCH 0
 
 // unsigned int types
-typedef unsigned char u8;
+typedef Uint8 u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 typedef unsigned long long u64;

@@ -14,7 +14,7 @@ class Window
     private:
     SDL_Window* window;
     string window_title;
-    i32 width = 800, height = 600;
+    i32 window_width = 800, window_height = 600;
 
     void init_window();
 
@@ -27,12 +27,13 @@ class Window
     Window(string title, i32 width, i32 height);
 
     // setters
-    void set_window_title(string title);
-    void set_window_size(i32 width, i32 height);
+    void set_title(string title);
+    void set_size(i32 width, i32 height);
 
     // getters
-    i32 get_width() const { return width; }
-    i32 get_height() const { return height; }
+    i32 get_width() const { return window_width; }
+    i32 get_height() const { return window_height; }
+    SDL_Window* get_sdl_window() const { return window; }
 
     // destructor
     ~Window();

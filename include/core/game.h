@@ -1,15 +1,23 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <core/window.h>
+#include <defines.h>
+#include <logger.h>
 #include <error.h>
+
+#include <core/window.h>
+#include <core/renderer.h>
+
+using std::make_unique;
+using std::unique_ptr;
 
 namespace y {
 
 class Game
 {
     private:
-    Window* window;
+    unique_ptr<Window> window;
+    unique_ptr<Renderer> renderer;
     bool running = false;
 
     SDL_Event event;
@@ -23,12 +31,10 @@ class Game
     }
 
     // window methods
-    inline void window_set_title(string title) {
-        window->set_window_title(title);
-    }
+    inline void window_set_title(string title) { window->set_title(title); }
 
     inline void window_set_size(i32 width, i32 height) {
-        window->set_window_size(width, height);
+        window->set_size(width, height);
     }
 
     // main methods
