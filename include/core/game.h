@@ -39,6 +39,14 @@ class Game
         window->set_size(width, height);
     }
 
+    // renderer methods
+    inline void load_map(string filepath) {
+        renderer->load_map(filepath);
+    }
+    inline void setup_camera(f64 posx, f64 posy, f64 angle) {
+        renderer->init_cam(posx, posy, angle);
+    }
+
     // main methods
     void handle_input();
     void update(i32 deltatime);
@@ -46,6 +54,7 @@ class Game
 
     // getters/setters
     bool is_running() const { return running; }
+
 
     // destructor
     ~Game();

@@ -8,7 +8,7 @@ void Map::load() {
     if(!file.is_open())
         YTHROWT(y::ErrType::Asset, "couldn't load map file: " + filepath);
 
-    LOGFMT(PROJNAME, "MAP", "Parsing world data: ", filepath);
+    LOGFMT(PROJNAME, "map", "parsing map data from: ", CYAN_TEXT(filepath));
 
     string line;
     y::math::Polygon curr_poly;

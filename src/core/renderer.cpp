@@ -26,7 +26,7 @@ void Renderer::load_map(string mapfile) {
 }
 
 void Renderer::put_pixel(i32 x, i32 y, pixel px) {
-    if(x > screen_width || y > screen_height)
+    if(x >= screen_width || y >= screen_height)
         return;
 
     if(x < 0 || y < 0)
@@ -36,42 +36,116 @@ void Renderer::put_pixel(i32 x, i32 y, pixel px) {
     YSDLCHECK(SDL_RenderPoint(renderer, x, y));
 }
 
-void Renderer::draw_line(y::math::Line line) {
-    // DDA[Digital Differential Analyzer] implementation
-    auto [x0, y0, x1, y1] = line.get();
+void Renderer::draw_line(y::math::Line line, y::pixel px) {
+    auto [fx0, fy0, fx1, fy1] = line.get();
 
-    i32 dx, dy;
-    dx = (x1 > x0) ? x1 - x0 : x0 - x1;
-    dy = (y1 > y0) ? y1 - y0 : y0 - y1;
+    i32 x0 = static_cast<i32>(fx0);
+    i32 y0 = static_cast<i32>(fy0);
+    i32 x1 = static_cast<i32>(fx1);
+    i32 y1 = static_cast<i32>(fy1);
 
+    // standard DDA implementation
+    i32 dx  = abs(x1 - x0);
+    i32 dy  = abs(y1 - y0);
     i32 sx  = (x0 < x1) ? 1 : -1;
     i32 sy  = (y0 < y1) ? 1 : -1;
-    i32 err = (dx > dy ? dx : -dy) / 2;
-    i32 err2;
+    i32 err = dx - dy;
 
-    while(true) {
-        put_pixel(x0, y0, pixel(0x55, 0xAA, 0x33));
+    for(;;) {
+        put_pixel(x0, y0, px);
 
-        if(x0 == x1 || y0 == y1)
+        if(x0 == x1 && y0 == y1)
             break;
 
-        err2 = err;
-        if(err2 > -dx)
-            err -= dy, x0 += sx;
-
-        if(err2 < dy)
-            err += dx, y0 += sy;
+        i32 e2 = 2 * err;
+        if(e2 > -dy) {
+            err -= dy;
+            x0 += sx;
+        }
+        if(e2 < dx) {
+            err += dx;
+            y0 += sy;
+        }
     }
 }
 
 void Renderer::render_map() {
-    vector<math::Polygon> polys = map.get_polygons();
+    vector<math::Polygon> polygons = map.get_polygons();
 
-    // TODO: render stuff
+    for(auto poly : polygons) {
+        for(size_t i = 0; i < poly.verts.size(); i++) {
+            math::vec2 p1 = poly.verts[i];
+            math::vec2 p2 = poly.verts[(i + 1) % poly.verts.size()];
+            f64 height    = -poly.height;
+
+            // transform pt 1
+            f64 dx1 = p1.x - cam.cam_pos.x;
+            f64 dy1 = p1.y - cam.cam_pos.y;
+
+            // depth for pt 1
+            f64 z1 = dx1 * cos(cam.cam_angle) + dy1 * sin(cam.cam_angle);
+
+            // transform pt 2
+            f64 dx2 = p2.x - cam.cam_pos.x;
+            f64 dy2 = p2.y - cam.cam_pos.y;
+
+            // depth for pt 2
+            f64 z2 = dx2 * cos(cam.cam_angle) + dy2 * sin(cam.cam_angle);
+
+            // near plane culling bug fix
+            if(z1 < 0.1 || z2 < 0.1)
+                continue;
+
+            // cam rotation to x
+            dx1 = dx1 * sin(cam.cam_angle) - dy1 * cos(cam.cam_angle);
+            dx2 = dx2 * sin(cam.cam_angle) - dy2 * cos(cam.cam_angle);
+
+            // screen projection
+            f64 width_ratio  = screen_width / 2.0;
+            f64 height_ratio = (screen_width * screen_height) / 60.0;
+
+            f64 screen_center_h = screen_height / 2.0;
+            f64 screen_center_w = screen_width / 2.0;
+
+            f64 x1 = -dx1 * width_ratio / z1;
+            f64 x2 = -dx2 * width_ratio / z2;
+
+            f64 y1a = (height - height_ratio) / z1;
+            f64 y1b = height_ratio / z1;
+            f64 y2a = (height - height_ratio) / z2;
+            f64 y2b = height_ratio / z2;
+
+            // draw the wireframe quad
+            draw_line(math::Line(screen_center_w + x1, screen_center_h + y1a,
+                                 screen_center_w + x2, screen_center_h + y2a),
+                      pixel(0x44, 0x88, 0x44));
+
+            draw_line(math::Line(screen_center_w + x1, screen_center_h + y1b,
+                                 screen_center_w + x2, screen_center_h + y2b),
+                      pixel(0x44, 0x88, 0x44));
+
+            draw_line(math::Line(screen_center_w + x1, screen_center_h + y1a,
+                                 screen_center_w + x1, screen_center_h + y1b),
+                      pixel(0x44, 0x88, 0x44));
+
+            draw_line(math::Line(screen_center_w + x2, screen_center_h + y2a,
+                                 screen_center_w + x2, screen_center_h + y2b),
+                      pixel(0x44, 0x88, 0x44));
+        }
+    }
+}
+
+void Renderer::update_screen() {
+    YSDLCHECK(SDL_RenderPresent(renderer));
 }
 
 void Renderer::render() {
-    YSDLCHECK(SDL_RenderPresent(renderer));
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    render_map();
+
+    update_screen();
 }
 
 Renderer::~Renderer() {

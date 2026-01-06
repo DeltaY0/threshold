@@ -14,6 +14,9 @@ int main() {
 
     game->window_set_title("THRESHOLD");
 
+    game->load_map("res/maps/level_0.map");
+    game->setup_camera(451.96, 209.24, 0.42);
+
     while(game->is_running()) {
         game->handle_input();
         game->update(60);

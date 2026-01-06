@@ -9,6 +9,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <math.h>
 
 using std::string;
 using std::tuple;

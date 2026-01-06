@@ -4,7 +4,7 @@
 #include <defines.h>
 #include <logger.h>
 #include <error.h>
-#include <types.h>
+#include <core/types.h>
 
 #include <core/window.h>
 #include <world/map.h>
@@ -39,9 +39,11 @@ class Renderer
 
     // drawing
     void put_pixel(i32 x, i32 y, pixel px);
-    void draw_line(y::math::Line line);
+    void draw_line(y::math::Line line, y::pixel px);
     void render_map();
 
+    // rendering
+    void update_screen();
     void render();
 
     // getters
